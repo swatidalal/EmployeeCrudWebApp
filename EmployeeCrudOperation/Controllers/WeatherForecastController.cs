@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-
+using Newtonsoft.Json;
 
 namespace EmployeeCrudOperation.Controllers
 {
@@ -14,7 +14,7 @@ namespace EmployeeCrudOperation.Controllers
             _logger = logger;
         }
 
-        List<EmployeeDetails> employeeList = new List<EmployeeDetails>();
+        public static List<EmployeeDetails> employeeList = new List<EmployeeDetails>();
 
         #region 24-06 hansOn
         [HttpPost]
@@ -28,14 +28,7 @@ namespace EmployeeCrudOperation.Controllers
         [HttpGet]
         public ActionResult GetAllEmployee()
         {
-            if (employeeList.Count() == 0)
-            {
-                return Ok("Currently employee list is empty.");
-            }
-            else
-            {
-                return Ok(employeeList);
-            }
+            return Ok(employeeList);
 
         }
 
