@@ -5,7 +5,7 @@ namespace EmployeeCrudOperation.Controllers
 {
 
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     public class EmployeeEducationController : Controller
     {
         private ILogger<EmployeeEducationController> _logger;
@@ -102,7 +102,7 @@ namespace EmployeeCrudOperation.Controllers
         #region pass-params-in-body
 
         [HttpPost]
-        public ActionResult AddEmployeeEduFromBody([System.Web.Http.FromBody] EmployeeEducation employeeEducation)
+        public ActionResult AddEmployeeEduFromBody([FromBody] EmployeeEducation employeeEducation)
         {
             employeeEducations.Add(new EmployeeEducation { EmpEduId = employeeEducation.EmpEduId, CourseName = employeeEducation.CourseName, UniName = employeeEducation.UniName, MarksPercentage = employeeEducation.MarksPercentage, EmpId = employeeEducation.EmpId });
             var serializedOp = JsonConvert.SerializeObject(employeeEducations[employeeEducations.Count - 1]);
@@ -110,17 +110,25 @@ namespace EmployeeCrudOperation.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetEduListOfAEmployeeFromBody([System.Web.Http.FromBody] int EmpId)
+        public ActionResult GetEduListOfAEmployeeFromBody([FromBody] int EmpId)
         {
 
-            var empEduList = employeeEducations.Where(e => e.EmpId == EmpId).ToList();
-            var serializedOp = JsonConvert.SerializeObject(empEduList);
-            return Ok($"{serializedOp}");
+            //var empEduList = employeeEducations.Where(e => e.EmpId == EmpId).ToList();
+            //var serializedOp = JsonConvert.SerializeObject(empEduList);
+            //return Ok($"{serializedOp}");
+            var empEduList = employeeEducations.FirstOrDefault(x => x.EmpId == EmpId);
+            if (empEduList == null)
+                return Ok("Wrong Employee ID");
+            else
+            {
+                var SerializedOutput = JsonConvert.SerializeObject(empEduList);
+                return Ok(SerializedOutput);
+            }
 
         }
 
         [HttpPut]
-        public ActionResult UpdatedEmployeeEduDetailsFromBody([System.Web.Http.FromBody] EmployeeEducation employeeEducation)
+        public ActionResult UpdatedEmployeeEduDetailsFromBody([FromBody] EmployeeEducation employeeEducation)
         {
             var emp = employeeEducations.Where(emp => emp.EmpEduId == employeeEducation.EmpEduId).FirstOrDefault();
             if (emp == null)
@@ -156,7 +164,7 @@ namespace EmployeeCrudOperation.Controllers
         }
 
         [HttpDelete]
-        public ActionResult DateteAEmployeeFromBody([System.Web.Http.FromBody] int EmpEduId)
+        public ActionResult DateteAEmployeeFromBody([FromBody] int EmpEduId)
         {
             var deleteEmployee = employeeEducations.Where(obj => obj.EmpEduId == EmpEduId).FirstOrDefault();
             if (deleteEmployee != null)
